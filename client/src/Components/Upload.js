@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Upload, message } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+import { Upload, message, Button } from 'antd';
 
 const { Dragger } = Upload;
 const props = {
@@ -35,21 +34,30 @@ class UploadBox extends React.Component {
 
 
     onChangeHandler = event => {
+
         this.setState({
-            selectedFile: event.target.files[0],
+            selectedFile: event.target.files,
             loaded: 0,
         })
+        console.log(event.target.files, "On change handler")
     }
+
 
     onClickHandler = () => {
         const data = new FormData()
-        data.append('file', this.state.selectedFile)
+        for (var x = 0; x < this.state.selectedFile.length; x++) {
+            data.append('file', this.state.selectedFile[x])
+        }
+
+
         axios.post("http://localhost:8000/upload", data, {
             // receive two    parameter endpoint url ,form data
         })
             .then(res => { // then print response status
                 console.log(res.statusText)
+                console.log(data, "This is the click handler")
             })
+
     }
 
 
@@ -57,17 +65,16 @@ class UploadBox extends React.Component {
     render() {
         return (
             <div>
-                <Dragger {...props}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                    <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-                        band files
-                </p>
-
-                </Dragger>
+                <div className="container">
+                    <div className='row'>
+                        <div className="offset-md-3 col-md-6">
+                            <div className="form-group files">
+                                <label>Uplaod</label>
+                                <input type="file" name="file" className="form-control" onChange={this.onChangeHandler} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <Button type="primary" onClick={this.onClickHandler}>Upload</Button>
             </div>
         );
