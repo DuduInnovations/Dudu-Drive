@@ -1,25 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Upload, message, Button } from 'antd';
-
-const { Dragger } = Upload;
-const props = {
-    name: 'file',
-    multiple: true,
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-};
-
+import './Upload.css';
 
 
 class UploadBox extends React.Component {
@@ -65,17 +46,20 @@ class UploadBox extends React.Component {
     render() {
         return (
             <div>
+                <h1 style={{textAlign:'center', paddingTop:'30px'}}>DUDU DRIVE</h1>  
+            <div className='topContainer'  style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '70vh'}}>
                 <div className="container">
                     <div className='row'>
                         <div className="offset-md-3 col-md-6">
                             <div className="form-group files">
                                 <label>Uplaod</label>
-                                <input type="file" name="file" className="form-control" onChange={this.onChangeHandler} />
+                                <input type="file" name="file" className="form-control-file" onChange={this.onChangeHandler} />
                             </div>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button> 
                 </div>
-                <Button type="primary" onClick={this.onClickHandler}>Upload</Button>
+            </div>
             </div>
         );
     }
