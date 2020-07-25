@@ -1,6 +1,6 @@
 import React from 'react';
 import UploadBox from './Upload';
-import './App.css';
+import '../CSS/App.css';
 
 class App extends React.Component {
 

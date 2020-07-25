@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import './Upload.css';
+import '../CSS/App.css';
 
 
 class UploadBox extends React.Component {
