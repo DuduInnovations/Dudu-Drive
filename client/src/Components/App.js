@@ -1,7 +1,6 @@
 import React from 'react';
 import UploadBox from './Upload';
 import '../CSS/App.css';
-import './App.css';
 import { simpleAction } from '../actions/simpleAction';
 import { connect } from 'react-redux';
 
