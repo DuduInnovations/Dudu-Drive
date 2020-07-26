@@ -5,5 +5,14 @@ A personal cloud drive for all the storage needs for cheap
 ![Architecture](/Dudu-Drive_architecture_V1.1.png)
 
 # Server
-nodemon server.js (to run the server locally, open on local host and port 8000) 
-NOTE: add C:\Users\UserName\AppData\Roaming\npm to sytem path if using windows
+npm start (run the server.js and react app)
+
+# Create Docker Container for MongoDb
+-docker pull mongo (get mongo docker image) <br/>
+-docker run -d -p 27017:27017 --name mongodb mongo (run docker in background and expose port 27017)<br/>
+-docker exec -it mongodb bash (launch the docker bash shell for mongo)<br/>
+-mongo (run mongo within shell)<br/>
+-show dbs (show current databases)<br/>
+-use db_to_create (make a db)<br/>
+
+
