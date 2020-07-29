@@ -7,11 +7,13 @@ const multer = require('multer');
 const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
-const uri = require('./config')
+const uri = require('./config');
+var cors = require('cors');
 
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
@@ -50,7 +52,7 @@ const storage = new GridFsStorage({
     });
   }
 });
-const upload = multer({ storage });
+const upload = multer({ storage }).array('file');
 
 // @route GET /
 // @desc Loads form
@@ -77,9 +79,18 @@ app.get('/', (req, res) => {
 
 // @route POST /upload
 // @desc  Uploads file to DB
-app.post('/upload', upload.array('file'), (req, res) => {
-  // res.json({ file: req.file });
-  res.redirect('/');
+app.post('/upload',function(req, res) {
+     
+    upload(req, res, function (err) {
+           if (err instanceof multer.MulterError) {
+               return res.status(500).json(err)
+           } else if (err) {
+               return res.status(500).json(err)
+           }
+      return res.status(200).send(req.file)
+
+    })
+
 });
 
 // @route GET /files
@@ -145,7 +156,7 @@ app.delete('/files/:id', (req, res) => {
       return res.status(404).json({ err: err });
     }
 
-    res.redirect('/');
+    //res.redirect('/');
   });
 });
 
