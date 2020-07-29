@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Progress} from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+var FileSaver = require('file-saver');
 class UploadBox extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +35,40 @@ class UploadBox extends Component {
       });
   }
 
+  deleteFile=(event)=> {
+    event.preventDefault();
+    const id = event.target.id;
+    fetch('http://localhost:5000/files/'+id, {
+      method: 'DELETE'
+    }).then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          this.loadFiles();
+          console.log('deleted')
+        }else {
+          alert('Delete Failed');}
+      })
+  }
 
+
+  download = (event) => {
+    event.preventDefault();
+    const fileName = event.target.id;
+    axios({
+      method: "GET",
+      url: 'http://localhost:5000/download/'+fileName,
+      responseType: "blob"
+    })
+      .then(response => {
+        this.setState({ fileDownloading: true }, () => {
+          FileSaver.saveAs(response.data, fileName);
+        });
+      })
+      .then(() => {
+        this.setState({ fileDownloading: false });
+        console.log("Completed");
+      });
+  };
   checkMimeType=(event)=>{
     //getting file object
     let files = event.target.files 
@@ -99,7 +133,7 @@ onChangeHandler=event=>{
       data.append('file', this.state.selectedFile[x])
     }
 
-    if (data.length > 0){
+    if (this.state.selectedFile.length > 0){
     axios.post("http://localhost:5000/upload", data, {
       onUploadProgress: ProgressEvent => {
         this.setState({
@@ -109,6 +143,7 @@ onChangeHandler=event=>{
     })
       .then(res => { // then print response status
         toast.success('upload success')
+        this.loadFiles()
       })
       .catch(err => { // then print response status
         toast.error('upload fail')
@@ -157,7 +192,9 @@ onChangeHandler=event=>{
                          <td><a href={`http://localhost:5000/files/${file.filename}`}>{file.filename}</a></td>
                          <td>{`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`}</td>
                          <td>{(Math.round(file.length/100) / 10)+'KB'}</td>
-                         {/* <td><button onClick={this.deleteFile.bind(this)} id={file._id}>Remove</button></td> */}
+                         <td><button onClick={this.deleteFile} id={file._id}>Remove</button></td>
+                         <td><button onClick={this.download} id={file.filename}>download</button></td>
+
                        </tr>
                      )
                    })}
