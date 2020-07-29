@@ -185,7 +185,7 @@ onChangeHandler=event=>{
                    </tr>
                  </thead>
                  <tbody>
-                   {this.state.files.map((file, index) => {
+                   {this.state.files.length > 0 && this.state.files.map((file, index) => {
                      var d = new Date(file.uploadDate);
                      return (
                        <tr key={index}>
