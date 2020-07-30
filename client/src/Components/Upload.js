@@ -46,7 +46,6 @@ class UploadBox extends React.Component {
     render() {
         return (
             <div>
-                <h1 style={{textAlign:'center', paddingTop:'30px'}}>DUDU DRIVE</h1>  
             <div className='topContainer'  style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '70vh'}}>
                 <div className="container">
                     <div className='row'>
