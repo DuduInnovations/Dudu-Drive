@@ -43,6 +43,7 @@ const storage = new GridFsStorage({
           return reject(err);
         }
         const filename = buf.toString('hex') + path.extname(file.originalname);
+        
         const fileInfo = {
           filename: filename,
           bucketName: 'uploads'
@@ -126,7 +127,11 @@ app.get('/files/:filename', (req, res) => {
 
 // @route GET /image/:filename
 // @desc Display Image
-app.get('/image/:filename', (req, res) => {
+app.get('/download/:filename', (req, res) => {
+  res.set({
+    "Accept-Ranges": "bytes",
+    "Content-Disposition": `attachment; filename=${req.params.filename}`,
+  });
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     // Check if file
     if (!file || file.length === 0) {
@@ -134,30 +139,23 @@ app.get('/image/:filename', (req, res) => {
         err: 'No file exists'
       });
     }
-
-    // Check if image
-    if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-      // Read output to browser
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
-    } else {
-      res.status(404).json({
-        err: 'Not an image'
-      });
-    }
+    console.log('download server reached')
+    const readstream = gfs.createReadStream(file.filename);
+    readstream.pipe(res); 
+ 
   });
+  
 });
 
 // @route DELETE /files/:id
 // @desc  Delete file
 app.delete('/files/:id', (req, res) => {
   gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, gridStore) => {
-    if (err) {
-      return res.status(404).json({ err: err });
-    }
-
+    if (err) return res.status(500).json({ success: false })
+    return res.json({ success: true });
+  })
+    
     //res.redirect('/');
-  });
 });
 
 const port = 5000;
